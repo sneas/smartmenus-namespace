@@ -1,6 +1,6 @@
 {
-  "name": "smartmenus",
-  "title": "SmartMenus",
+  "name": "smartmenus-namespace",
+  "title": "SmartMenus with namespace",
   "description": "Advanced jQuery website menu plugin. Mobile first, responsive and accessible list-based website menus that work on all devices.",
   "keywords": [
     "menu",
