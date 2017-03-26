@@ -22,6 +22,8 @@
 	}
 } (function($) {
 
+    var classPrefix = BOOTSTRAP_NAMESPACE || 'z';
+
 	var menuTrees = [],
 		IE = !!window.createPopup, // detect it for the iframe shim
 		mouse = false, // optimize for touch by default - we will detect for mouse input
@@ -139,7 +141,7 @@
 					this.rootId = (new Date().getTime() + Math.random() + '').replace(/\D/g, '');
 					this.accessIdPrefix = 'sm-' + this.rootId + '-';
 
-					if (this.$root.hasClass('sm-rtl')) {
+					if (this.$root.hasClass(classPrefix + '-sm-rtl')) {
 						this.opts.rightToLeftSubMenus = true;
 					}
 
@@ -178,7 +180,7 @@
 					$(window).bind(getEventsNS([['resize orientationchange', $.proxy(this.winResize, this)]], eNS));
 
 					if (this.opts.subIndicators) {
-						this.$subArrow = $('<span/>').addClass('sub-arrow');
+						this.$subArrow = $('<span/>').addClass(classPrefix + '-sub-arrow');
 						if (this.opts.subIndicatorsText) {
 							this.$subArrow.html(this.opts.subIndicatorsText);
 						}
@@ -203,10 +205,10 @@
 						var href = this.href.replace(reDefaultDoc, ''),
 							$this = $(this);
 						if (href == locHref || href == locHrefNoHash) {
-							$this.addClass('current');
+							$this.addClass(classPrefix + '-current');
 							if (self.opts.markCurrentTree) {
-								$this.parentsUntil('[data-smartmenus-id]', 'ul').each(function() {
-									$(this).dataSM('parent-a').addClass('current');
+								$this.parentsUntil('[data-smartmenus-id]', '.' + classPrefix + '-tag-ul').each(function() {
+									$(this).dataSM('parent-a').addClass(classPrefix + '-current');
 								});
 							}
 						}
@@ -241,7 +243,7 @@
 						}
 						if ($this.dataSM('shown-before')) {
 							if (self.opts.subMenusMinWidth || self.opts.subMenusMaxWidth) {
-								$this.css({ width: '', minWidth: '', maxWidth: '' }).removeClass('sm-nowrap');
+								$this.css({ width: '', minWidth: '', maxWidth: '' }).removeClass(classPrefix + '-sm-nowrap');
 							}
 							if ($this.dataSM('scroll-arrows')) {
 								$this.dataSM('scroll-arrows').remove();
@@ -269,17 +271,17 @@
 							$this.removeAttr('id');
 						}
 					})
-					.removeClass('has-submenu')
+					.removeClass(classPrefix + '-has-submenu')
 					.removeDataSM('sub')
 					.removeAttr('aria-haspopup')
 					.removeAttr('aria-controls')
 					.removeAttr('aria-expanded')
-					.closest('li').removeDataSM('sub');
+					.closest('.' + classPrefix + '-tag-li').removeDataSM('sub');
 				if (this.opts.subIndicators) {
-					this.$root.find('span.sub-arrow').remove();
+					this.$root.find('.' + classPrefix + '-span.' + classPrefix + '-sub-arrow').remove();
 				}
 				if (this.opts.markCurrentItem) {
-					this.$root.find('a.current').removeClass('current');
+					this.$root.find('.' + classPrefix + '-tag-a.' + classPrefix + '-current').removeClass(classPrefix + '-current');
 				}
 				if (!refresh) {
 					this.$root = null;
@@ -317,7 +319,7 @@
 					return;
 				}
 				// hide on any click outside the menu or on a menu link
-				if (this.visibleSubMenus.length && !$.contains(this.$root[0], e.target) || $(e.target).closest('a').length) {
+				if (this.visibleSubMenus.length && !$.contains(this.$root[0], e.target) || $(e.target).closest('.' + classPrefix + '-tag-a').length) {
 					this.menuHideAll();
 				}
 			},
@@ -358,9 +360,9 @@
 				}
 			},
 			getClosestMenu: function(elm) {
-				var $closestMenu = $(elm).closest('ul');
+				var $closestMenu = $(elm).closest('.' + classPrefix + '-tag-ul');
 				while ($closestMenu.dataSM('in-mega')) {
-					$closestMenu = $closestMenu.parent().closest('ul');
+					$closestMenu = $closestMenu.parent().closest('.' + classPrefix + '-tag-ul');
 				}
 				return $closestMenu[0] || null;
 			},
@@ -372,7 +374,9 @@
 				var old;
 				if ($elm.css('display') == 'none') {
 					old = { position: $elm[0].style.position, visibility: $elm[0].style.visibility };
-					$elm.css({ position: 'absolute', visibility: 'hidden' }).show();
+					// $elm.css({ position: 'absolute', visibility: 'hidden' }).show() removed
+					// ToDo: Find out why
+					$elm.css({ position: 'absolute', visibility: 'hidden' });
 				}
 				var box = $elm[0].getBoundingClientRect && $elm[0].getBoundingClientRect(),
 					val = box && (height ? box.height || box.bottom - box.top : box.width || box.right - box.left);
@@ -422,7 +426,7 @@
 				return this.$firstSub.css('position') == 'static';
 			},
 			isCSSOn: function() {
-				return this.$firstLink.css('display') != 'inline';
+				return this.$firstLink.css('display') == 'block';
 			},
 			isFixed: function() {
 				var isFixed = this.$root.css('position') == 'fixed';
@@ -437,7 +441,7 @@
 				return isFixed;
 			},
 			isLinkInMegaMenu: function($a) {
-				return $(this.getClosestMenu($a[0])).hasClass('mega-menu');
+				return $(this.getClosestMenu($a[0])).hasClass(classPrefix + '-mega-menu');
 			},
 			isTouchMode: function() {
 				return !mouse || this.opts.noMouseOver || this.isCollapsible();
@@ -508,7 +512,7 @@
 					this.menuHide($sub);
 					return false;
 				}
-				if (this.opts.showOnClick && firstLevelSub || $a.hasClass('disabled') || this.$root.triggerHandler('select.smapi', $a[0]) === false) {
+				if (this.opts.showOnClick && firstLevelSub || $a.hasClass(classPrefix + '-disabled') || this.$root.triggerHandler('select.smapi', $a[0]) === false) {
 					return false;
 				}
 			},
@@ -595,7 +599,7 @@
 							.unbind('.smartmenus_scroll').removeDataSM('scroll').dataSM('scroll-arrows').hide();
 					}
 					// unhighlight parent item + accessibility
-					$sub.dataSM('parent-a').removeClass('highlighted').attr('aria-expanded', 'false');
+					$sub.dataSM('parent-a').removeClass(classPrefix + '-highlighted').attr('aria-expanded', 'false');
 					$sub.attr({
 						'aria-expanded': 'false',
 						'aria-hidden': 'true'
@@ -659,7 +663,7 @@
 			menuInit: function($ul) {
 				if (!$ul.dataSM('in-mega')) {
 					// mark UL's in mega drop downs (if any) so we can neglect them
-					if ($ul.hasClass('mega-menu')) {
+					if ($ul.hasClass(classPrefix + '-mega-menu')) {
 						$ul.find('ul').dataSM('in-mega', true);
 					}
 					// get level (much faster than, for example, using parentsUntil)
@@ -674,7 +678,7 @@
 					if (!$a.length) {
 						$a = $ul.prevAll().find('a').eq(-1);
 					}
-					$a.addClass('has-submenu').dataSM('sub', $ul);
+					$a.addClass(classPrefix + '-has-submenu').dataSM('sub', $ul);
 					$ul.dataSM('parent-a', $a)
 						.dataSM('level', level)
 						.parent().dataSM('sub', $ul);
@@ -702,7 +706,7 @@
 			},
 			menuPosition: function($sub) {
 				var $a = $sub.dataSM('parent-a'),
-					$li = $a.closest('li'),
+					$li = $a.closest('.' + classPrefix + '-tag-li'),
 					$ul = $li.parent(),
 					level = $sub.dataSM('level'),
 					subW = this.getWidth($sub),
@@ -717,7 +721,7 @@
 					winY = $win.scrollTop(),
 					winW = this.getViewportWidth(),
 					winH = this.getViewportHeight(),
-					horizontalParent = $ul.parent().is('[data-sm-horizontal-sub]') || level == 2 && !$ul.hasClass('sm-vertical'),
+					horizontalParent = $ul.parent().is('[data-sm-horizontal-sub]') || level == 2 && !$ul.hasClass(classPrefix + '-sm-vertical'),
 					rightToLeft = this.opts.rightToLeftSubMenus && !$li.is('[data-sm-reverse]') || !this.opts.rightToLeftSubMenus && $li.is('[data-sm-reverse]'),
 					subOffsetX = level == 2 ? this.opts.mainMenuSubOffsetX : this.opts.subMenusSubOffsetX,
 					subOffsetY = level == 2 ? this.opts.mainMenuSubOffsetY : this.opts.subMenusSubOffsetY,
@@ -752,7 +756,7 @@
 							$sub.dataSM('scroll-arrows', $([$('<span class="scroll-up"><span class="scroll-up-arrow"></span></span>')[0], $('<span class="scroll-down"><span class="scroll-down-arrow"></span></span>')[0]])
 								.bind({
 									mouseenter: function() {
-										$sub.dataSM('scroll').up = $(this).hasClass('scroll-up');
+										$sub.dataSM('scroll').up = $(this).hasClass(classPrefix + '-scroll-up');
 										self.menuScroll($sub);
 									},
 									mouseleave: function(e) {
@@ -959,16 +963,16 @@
 					// highlight parent item
 					var $a = $sub.dataSM('parent-a');
 					if (this.opts.keepHighlighted || this.isCollapsible()) {
-						$a.addClass('highlighted');
+						$a.addClass(classPrefix + '-highlighted');
 					}
 					if (this.isCollapsible()) {
-						$sub.removeClass('sm-nowrap').css({ zIndex: '', width: 'auto', minWidth: '', maxWidth: '', top: '', left: '', marginLeft: '', marginTop: '' });
+						$sub.removeClass(classPrefix + '-sm-nowrap').css({ zIndex: '', width: 'auto', minWidth: '', maxWidth: '', top: '', left: '', marginLeft: '', marginTop: '' });
 					} else {
 						// set z-index
 						$sub.css('z-index', this.zIndexInc = (this.zIndexInc || this.getStartZIndex()) + 1);
 						// min/max-width fix - no way to rely purely on CSS as all UL's are nested
 						if (this.opts.subMenusMinWidth || this.opts.subMenusMaxWidth) {
-							$sub.css({ width: 'auto', minWidth: '', maxWidth: '' }).addClass('sm-nowrap');
+							$sub.css({ width: 'auto', minWidth: '', maxWidth: '' }).addClass(classPrefix + '-sm-nowrap');
 							if (this.opts.subMenusMinWidth) {
 							 	$sub.css('min-width', this.opts.subMenusMinWidth);
 							}
@@ -976,7 +980,7 @@
 							 	var noMaxWidth = this.getWidth($sub);
 							 	$sub.css('max-width', this.opts.subMenusMaxWidth);
 								if (noMaxWidth > this.getWidth($sub)) {
-									$sub.removeClass('sm-nowrap').css('width', this.opts.subMenusMaxWidth);
+									$sub.removeClass(classPrefix + '-sm-nowrap').css('width', this.opts.subMenusMaxWidth);
 								}
 							}
 						}
