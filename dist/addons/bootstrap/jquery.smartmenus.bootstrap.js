@@ -1,5 +1,5 @@
 /*!
- * SmartMenus jQuery Plugin Bootstrap Addon - v0.3.1 - November 1, 2016
+ * SmartMenus jQuery Plugin Bootstrap Addon - v0.3.1 - March 26, 2017
  * http://www.smartmenus.org/
  *
  * Copyright Vasil Dinkov, Vadikom Web Ltd.
@@ -11,7 +11,7 @@
 (function(factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD
-		define(['jquery', 'jquery.smartmenus'], factory);
+		define(['jquery', 'smartmenus'], factory);
 	} else if (typeof module === 'object' && typeof module.exports === 'object') {
 		// CommonJS
 		module.exports = factory(require('jquery'));
@@ -21,11 +21,13 @@
 	}
 } (function($) {
 
+    var classPrefix = BOOTSTRAP_NAMESPACE || 'z';
+
 	$.extend($.SmartMenus.Bootstrap = {}, {
 		keydownFix: false,
 		init: function() {
 			// init all navbars that don't have the "data-sm-skip" attribute set
-			var $navbars = $('ul.navbar-nav:not([data-sm-skip])');
+			var $navbars = $('.' + classPrefix + '-tag-ul.' + classPrefix + '-navbar-nav:not([data-sm-skip])');
 			$navbars.each(function() {
 				var $this = $(this),
 					obj = $this.data('smartmenus');
@@ -40,8 +42,8 @@
 							subIndicators: false,
 							collapsibleShowFunction: null,
 							collapsibleHideFunction: null,
-							rightToLeftSubMenus: $this.hasClass('navbar-right'),
-							bottomToTopSubMenus: $this.closest('.navbar').hasClass('navbar-fixed-bottom')
+							rightToLeftSubMenus: $this.hasClass(classPrefix + '-navbar-right'),
+							bottomToTopSubMenus: $this.closest('.' + classPrefix + '-navbar').hasClass(classPrefix + '-navbar-fixed-bottom')
 						})
 						.bind({
 							// set/unset proper Bootstrap classes for some menu elements
@@ -52,18 +54,18 @@
 									// they inherit border-color from body, so we can use its background-color too
 									$scrollArrows.css('background-color', $(document.body).css('background-color'));
 								}
-								$menu.parent().addClass('open');
+								$menu.parent().addClass(classPrefix + '-open');
 							},
 							'hide.smapi': function(e, menu) {
-								$(menu).parent().removeClass('open');
+								$(menu).parent().removeClass(classPrefix + '-open');
 							}
 						});
 
 					function onInit() {
 						// set Bootstrap's "active" class to SmartMenus "current" items (should someone decide to enable markCurrentItem: true)
-						$this.find('a.current').parent().addClass('active');
+						$this.find('.' + classPrefix + '-tag-a.' + classPrefix + '-current').parent().addClass(classPrefix + '-active');
 						// remove any Bootstrap required attributes that might cause conflicting issues with the SmartMenus script
-						$this.find('a.has-submenu').each(function() {
+						$this.find('.' + classPrefix + '-tag-a.' + classPrefix + '-has-submenu').each(function() {
 							var $this = $(this);
 							if ($this.is('[data-toggle="dropdown"]')) {
 								$this.dataSM('bs-data-toggle-dropdown', true).removeAttr('data-toggle');
@@ -77,8 +79,8 @@
 					onInit();
 
 					function onBeforeDestroy() {
-						$this.find('a.current').parent().removeClass('active');
-						$this.find('a.has-submenu').each(function() {
+						$this.find('.' + classPrefix + '-tag-a.' + classPrefix + '-current').parent().removeClass(classPrefix + '-active');
+						$this.find('.' + classPrefix + '-tag-a.' + classPrefix + '-has-submenu').each(function() {
 							var $this = $(this);
 							if ($this.dataSM('bs-data-toggle-dropdown')) {
 								$this.attr('data-toggle', 'dropdown').removeDataSM('bs-data-toggle-dropdown');
@@ -136,15 +138,15 @@
 						if (newW != winW || force) {
 							var $carets = $this.find('.caret');
 							if (obj.isCollapsible()) {
-								$this.addClass('sm-collapsible');
+								$this.addClass(classPrefix + '-sm-collapsible');
 								// set "navbar-toggle" class to carets (so they look like a button) if the "data-sm-skip-collapsible-behavior" attribute is not set to the ul.navbar-nav
 								if (!$this.is('[data-sm-skip-collapsible-behavior]')) {
-									$carets.addClass('navbar-toggle sub-arrow');
+									$carets.addClass(classPrefix + '-navbar-toggle ' + classPrefix + '-sub-arrow');
 								}
 							} else {
-								$this.removeClass('sm-collapsible');
+								$this.removeClass(classPrefix + '-sm-collapsible');
 								if (!$this.is('[data-sm-skip-collapsible-behavior]')) {
-									$carets.removeClass('navbar-toggle sub-arrow');
+									$carets.removeClass(classPrefix + '-navbar-toggle ' + classPrefix + '-sub-arrow');
 								}
 							}
 							winW = newW;
@@ -157,10 +159,10 @@
 			// keydown fix for Bootstrap 3.3.5+ conflict
 			if ($navbars.length && !$.SmartMenus.Bootstrap.keydownFix) {
 				// unhook BS keydown handler for all dropdowns
-				$(document).off('keydown.bs.dropdown.data-api', '.dropdown-menu');
+				$(document).off('keydown.bs.dropdown.data-api', '.' + classPrefix + '-dropdown-menu');
 				// restore BS keydown handler for dropdowns that are not inside SmartMenus navbars
 				if ($.fn.dropdown && $.fn.dropdown.Constructor) {
-					$(document).on('keydown.bs.dropdown.data-api', '.dropdown-menu:not([id^="sm-"])', $.fn.dropdown.Constructor.prototype.keydown);
+					$(document).on('keydown.bs.dropdown.data-api', '.' + classPrefix + '-dropdown-menu:not([id^="sm-"])', $.fn.dropdown.Constructor.prototype.keydown);
 				}
 				$.SmartMenus.Bootstrap.keydownFix = true;
 			}

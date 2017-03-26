@@ -107,12 +107,12 @@ module.exports = function(grunt) {
         files: [
           // copy stuff to zip/
           { src: ['LICENSE-MIT', 'README.md'], dest: 'zip/<%= distdir %>/' },
-          { src: ['src/addons/bootstrap/jquery.smartmenus.bootstrap.css'], dest: 'zip/<%= distdir %>/addons/bootstrap/jquery.smartmenus.bootstrap.css' },
+          { src: ['src/addons/bootstrap/jquery.smartmenus.bootstrap.scss'], dest: 'zip/<%= distdir %>/addons/bootstrap/jquery.smartmenus.bootstrap.scss' },
           { expand: true, cwd: 'src/', src: ['css/**', 'demo/**', 'libs/**'], dest: 'zip/<%= distdir %>/' },
           // copy stuff to dist/
           { src: ['zip/<%= distdir %>/jquery.smartmenus.js'], dest: 'dist/jquery.smartmenus.js' },
           { src: ['zip/<%= distdir %>/jquery.smartmenus.min.js'], dest: 'dist/jquery.smartmenus.min.js' },
-          { src: ['src/addons/bootstrap/jquery.smartmenus.bootstrap.css'], dest: 'dist/addons/bootstrap/jquery.smartmenus.bootstrap.css' },
+          { src: ['src/addons/bootstrap/jquery.smartmenus.bootstrap.scss'], dest: 'dist/addons/bootstrap/jquery.smartmenus.bootstrap.scss' },
           { expand: true, cwd: 'src/', src: ['css/**'], dest: 'dist/' },
           { expand: true, cwd: 'zip/<%= distdir %>/', src: ['addons/**'], dest: 'dist/' }
         ]
