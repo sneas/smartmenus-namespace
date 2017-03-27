@@ -137,7 +137,7 @@
 					function detectCollapsible(force) {
 						var newW = obj.getViewportWidth();
 						if (newW != winW || force) {
-							var $carets = $this.find('.' + classPrefix + 'caret');
+							var $carets = $this.find('.' + classPrefix + '-caret');
 							if (obj.isCollapsible()) {
 								$this.addClass(classPrefix + '-sm-collapsible');
 								// set "navbar-toggle" class to carets (so they look like a button) if the "data-sm-skip-collapsible-behavior" attribute is not set to the ul.navbar-nav
