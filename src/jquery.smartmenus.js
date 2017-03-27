@@ -278,7 +278,7 @@
 					.removeAttr('aria-expanded')
 					.closest('.' + classPrefix + '-tag-li').removeDataSM('sub');
 				if (this.opts.subIndicators) {
-					this.$root.find('.' + classPrefix + '-span.' + classPrefix + '-sub-arrow').remove();
+					this.$root.find('.' + classPrefix + '-sub-arrow').remove();
 				}
 				if (this.opts.markCurrentItem) {
 					this.$root.find('.' + classPrefix + '-tag-a.' + classPrefix + '-current').removeClass(classPrefix + '-current');
@@ -491,7 +491,7 @@
 				if (this.$root.triggerHandler('click.smapi', $a[0]) === false) {
 					return false;
 				}
-				var subArrowClicked = $(e.target).is('span.sub-arrow'),
+				var subArrowClicked = $(e.target).is('.' + classPrefix + '-sub-arrow'),
 					$sub = $a.dataSM('sub'),
 					firstLevelSub = $sub ? $sub.dataSM('level') == 2 : false;
 				// if the sub is not visible
