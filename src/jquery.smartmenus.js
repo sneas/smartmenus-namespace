@@ -207,7 +207,7 @@
 						if (href == locHref || href == locHrefNoHash) {
 							$this.addClass(classPrefix + '-current');
 							if (self.opts.markCurrentTree) {
-								$this.parentsUntil('[data-smartmenus-id]', '.' + classPrefix + '-tag-ul').each(function() {
+								$this.parentsUntil('[data-smartmenus-id]', '.' + classPrefix + '-html-ul').each(function() {
 									$(this).dataSM('parent-a').addClass(classPrefix + '-current');
 								});
 							}
@@ -276,12 +276,12 @@
 					.removeAttr('aria-haspopup')
 					.removeAttr('aria-controls')
 					.removeAttr('aria-expanded')
-					.closest('.' + classPrefix + '-tag-li').removeDataSM('sub');
+					.closest('.' + classPrefix + '-html-li').removeDataSM('sub');
 				if (this.opts.subIndicators) {
 					this.$root.find('.' + classPrefix + '-sub-arrow').remove();
 				}
 				if (this.opts.markCurrentItem) {
-					this.$root.find('.' + classPrefix + '-tag-a.' + classPrefix + '-current').removeClass(classPrefix + '-current');
+					this.$root.find('.' + classPrefix + '-html-a.' + classPrefix + '-current').removeClass(classPrefix + '-current');
 				}
 				if (!refresh) {
 					this.$root = null;
@@ -319,7 +319,7 @@
 					return;
 				}
 				// hide on any click outside the menu or on a menu link
-				if (this.visibleSubMenus.length && !$.contains(this.$root[0], e.target) || $(e.target).closest('.' + classPrefix + '-tag-a').length) {
+				if (this.visibleSubMenus.length && !$.contains(this.$root[0], e.target) || $(e.target).closest('.' + classPrefix + '-html-a').length) {
 					this.menuHideAll();
 				}
 			},
@@ -360,9 +360,9 @@
 				}
 			},
 			getClosestMenu: function(elm) {
-				var $closestMenu = $(elm).closest('.' + classPrefix + '-tag-ul');
+				var $closestMenu = $(elm).closest('.' + classPrefix + '-html-ul');
 				while ($closestMenu.dataSM('in-mega')) {
-					$closestMenu = $closestMenu.parent().closest('.' + classPrefix + '-tag-ul');
+					$closestMenu = $closestMenu.parent().closest('.' + classPrefix + '-html-ul');
 				}
 				return $closestMenu[0] || null;
 			},
@@ -706,7 +706,7 @@
 			},
 			menuPosition: function($sub) {
 				var $a = $sub.dataSM('parent-a'),
-					$li = $a.closest('.' + classPrefix + '-tag-li'),
+					$li = $a.closest('.' + classPrefix + '-html-li'),
 					$ul = $li.parent(),
 					level = $sub.dataSM('level'),
 					subW = this.getWidth($sub),
